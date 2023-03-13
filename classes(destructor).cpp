@@ -27,12 +27,16 @@ class Class {
         *dynamic_int_data = *dynamic; //deep copy
     }
 
-    // Class(Class &obj) {
-    //     this->char_data = obj.char_data;
-    //     this->double_data = obj.double_data;
-    //     this->int_data = obj.int_data;
-    //     this->dynamic_int_data = 
-    // }
+    /*
+    revise concept of deep copy
+    */
+
+    Class(Class &obj) {
+        this->char_data = obj.char_data;
+        this->double_data = obj.double_data;
+        this->int_data = obj.int_data;
+        this->dynamic_int_data = obj.dynamic_int_data;
+    }
 };
 
 int main() {
