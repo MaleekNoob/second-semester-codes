@@ -32,10 +32,19 @@ class Class {
     */
 
     Class(Class &obj) {
+
+        cout << "SHALLOW COPY DEMO";
+
+        cout << "ADDRESS OF DYNAMIC_INT_DATA AFTER MODIFICATION" << this->dynamic_int_data << " WITH VALUE: " << *this->dynamic_int_data;
+        cout << "ADDRESS OF DYNAMIC_INT_DATA (OBJ) AFTER MODIFICATION" << obj.dynamic_int_data << " WITH VALUE: " << *obj.dynamic_int_data;
+
         this->char_data = obj.char_data;
         this->double_data = obj.double_data;
         this->int_data = obj.int_data;
         this->dynamic_int_data = obj.dynamic_int_data;
+
+        cout << "ADDRESS OF DYNAMIC_INT_DATA AFTER MODIFICATION" << this->dynamic_int_data << " WITH VALUE: " << *this->dynamic_int_data;
+        cout << "ADDRESS OF DYNAMIC_INT_DATA (OBJ) AFTER MODIFICATION" << obj.dynamic_int_data << " WITH VALUE: " << *obj.dynamic_int_data;
     }
 };
 
@@ -44,29 +53,24 @@ int main() {
     int* dynamic = new int;
     *dynamic = 10;
 
-    cout << endl << "ADDRESS AND VALUE OF DYNAMIC VARIABLE BEFORE MODIFICATION";
-    cout << endl << "Address: " << dynamic << endl << "Value: " << *dynamic;
+    // cout << endl << "ADDRESS AND VALUE OF DYNAMIC VARIABLE BEFORE MODIFICATION";
+    // cout << endl << "Address: " << dynamic << endl << "Value: " << *dynamic;
 
     int* dynamic_arr = new int[5]{1, 2, 3, 4, 5};
     cout << endl;
 
-    cout << endl << "ADDRESS AND VALUE OF DYNAMIC ARRAY BEFORE MODIFICATION";
-    cout << endl << "Address: " << dynamic_arr << endl << "Values: ";
+    // cout << endl << "ADDRESS AND VALUE OF DYNAMIC ARRAY BEFORE MODIFICATION";
+    // cout << endl << "Address: " << dynamic_arr << endl << "Values: ";
     for (int i = 0; i < 5; i++) {
         cout << endl << *(dynamic_arr + i);
     }
 
     *dynamic = *dynamic_arr;
-    cout << endl << "ADDRESS AND VALUE OF DYNAMIC VARIABLE AFTER MODIFICATION";
-    cout << endl << "Address: " << dynamic << endl << "Values: ";
+    // cout << endl << "ADDRESS AND VALUE OF DYNAMIC VARIABLE AFTER MODIFICATION";
+    // cout << endl << "Address: " << dynamic << endl << "Values: ";
     for (int i = 0; i < 5; i++) {
         cout << endl << *(dynamic + i);
     }
-
-    /*
-    meow meow
-    ahmed bilal aik billi hai
-    */
 
     return 0;
 }
