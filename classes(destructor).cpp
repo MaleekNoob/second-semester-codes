@@ -59,5 +59,10 @@ int main() {
         cout << endl << *(dynamic + i);
     }
 
+    /*
+    meow meow
+    ahmed bilal aik billi hai
+    */
+
     return 0;
 }
