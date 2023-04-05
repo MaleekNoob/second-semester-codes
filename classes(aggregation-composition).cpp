@@ -8,6 +8,39 @@ using namespace std;
 class Engine;
 class Car;
 class Person;
+class hubercluoses;
+
+class hubercluoses {
+    int a, b;
+
+    public:
+    hubercluoses(int a = 0, int b = 0) {
+        this->a = a;
+        this->b = b;
+    }
+
+    int getA() {
+        return a;
+    }
+
+    int getB() {
+        return b;
+    }
+
+    void setA(int a) {
+        this->a = a;
+    }
+
+    void setB(int b) {
+        this->b = b;
+    }
+
+    virtual void print() const = 0;
+};
+
+void hubercluoses::print() const {
+        cout << "a: " << a << ", b: " << b << endl;
+    }
 
 // Engine class (part of Car)
 class Engine {
