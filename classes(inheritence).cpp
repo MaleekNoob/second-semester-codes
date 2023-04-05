@@ -66,7 +66,7 @@ class Cube: public Triangle, public Square {
     int width, height;
 
     public:
-    Cube(int i = 0, int j = 0): width(i), height(j) {
+    Cube(int width = 0, int height = 0): width(width), height(height) {
         cout << endl << "Cube class constructor called" << endl;
     }
 
