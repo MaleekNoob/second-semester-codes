@@ -1,0 +1,16 @@
+room	floor	capacity
+19	G	50
+20	G	50
+27	G	50
+28	G	50
+29	G	50
+30	G	50
+127	1	50
+128	1	50
+129	1	50
+130	1	50
+ckt	1	30
+pth	G	26
+Koh	1	44
+Roh	2	48
+wshop	G	33
