@@ -43,28 +43,80 @@ public:
 
 };
 
-class Profile {
+class Profile: public User {
+protected:
+	User user;
 
 public:
-	User user;
+	virtual void func() = 0;
+
 	virtual void display() {
-        cout << endl << "Account Status: Public Profile";
-        cout << endl << "Username: " << user.getUsername();
-    }
+		cout << "\nUsername: " << user.getUsername();
+	}
 
 };
 
 class PrivateProfile: public Profile {
 protected:
-	string name, email, phone;
+	string name, email;
+	Profile* p;
 	
 public:
-	void display() {
-		cout << endl << "Account Status: Private Profile";
-		cout << endl << "Username: ";
-		cout << endl << "Name: " << name;
+	PrivateProfile(string name = "", string email = "") {
+		this->name = name;
+		this->email = email;
 	}
 
+	void display() {
+		cout << endl << "Account Status: Private Profile";
+		cout << endl << "Username: " << p->getUsername();
+		cout << endl << "Name: " << name;
+		cout << endl << "Email: " << email;
+	}
+
+};
+
+class PublicProfile {
+protected:
+	string contactInfo, interest;
+	Profile* p;
+
+public:
+	PublicProfile(string contactInfo = "", string interest = "", Profile* p = nullptr) {
+		this->contactInfo = contactInfo;
+		this->interest = interest;
+		this->p = p;
+	}
+
+	void display() {
+		cout << endl << "Account Status: Public Profile";
+		cout << endl << "Username: " << p->getUsername();
+		cout << endl << "ContactInfo: " << contactInfo;
+		cout << endl << "Interest: " << interest;
+	}
+};
+
+class MessageWall {
+protected:
+	User user;
+
+public:
+	void addMessage() {
+		cout << endl << "Add a message: ";
+	}
+
+	void removeMessage();
+};
+
+class Message {
+	User sender, reciever;
+	int timestamp;
+	MessageWall* message_wall;
+
+public:
+	void post() {
+		
+	}
 };
 
 int main() {

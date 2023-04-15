@@ -283,59 +283,76 @@ int main() {
     myfile3.close();
     myfile4.close();
 
-    // cout << endl << "Enter city name to display all Students belonging to that city: ";
-    // cin >> city;
+    int choice;
+    while (1)
+    {
+        cout << endl << "\n1-Students belonging to given city\n2-Print detail of student according to given input\n3-Print course details of particular student according to given roll number\n4-Display all students enrolled in particular course according to given course code\n5-Terminate Student management app\nEnter choice: ";
+        cin >> choice;
 
-    // for (int i = 0; i < 450; i++) {
-    //     if (s[i].getCity() == city) {
-    //         s[i].display();
-    //     }
-    // }
+        switch (choice)
+        {
+        case 1:
+            cout << endl << "Enter city name to display all Students belonging to that city: ";
+            cin >> city;
 
-    // cout << endl << "Enter roll Number of Student to print his/her details: ";
-    // cin >> rollNo;
+            for (int i = 0; i < 450; i++) {
+                if (s[i].getCity() == city) {
+                    s[i].display();
+                }
+            }
+            break;
 
-    // for (int i = 0; i < 450; i++) {
-    //     if (s[i].getRollNo() == rollNo) {
-    //         s[i].display();
-    //     }
-    // }
+        case 2:
+            cout << endl << "Enter roll Number of Student to print his/her details: ";
+            cin >> rollNo;
 
-    // cout << endl << "Following are the list of students with CGPA less than 2.00";
+            for (int i = 0; i < 450; i++) {
+                if (s[i].getRollNo() == rollNo) {
+                    s[i].display();
+                }
+            }
+            break;
 
-    // for (int i = 0; i < 450; i++) {
-    //     if (s[i].getCGPA() < 2.00) {
-    //         cout << endl << "Roll number: " << s[i].getRollNo();
-    //         cout << endl << "Names: " << s[i].getName();
-    //     }
-    // }
+        case 3:
+            cout << endl << "Enter roll number for a particular student: ";
+            cin >> rollNo;
 
-    cout << endl << "Enter roll number for a particular student: ";
-    cin >> rollNo;
-
-    for (int i = 0; i < 450; i++) {
-        if (s[i].getRollNo() == rollNo) {
-            for (int j = 0; j < 5; j++)
-            {    
-                for (int k = 0; k < 40; k++ )
-                    if (s[i].getCourses()[j] == c[k].getCode()) {
-                        cout << endl << "Course Title: " << c[k].getTitle();
-                        cout << endl << "Course Code: " << c[k].getCode();
-                        break;
+            for (int i = 0; i < 450; i++) {
+                if (s[i].getRollNo() == rollNo) {
+                    for (int j = 0; j < 5; j++)
+                    {    
+                        for (int k = 0; k < 40; k++ )
+                            if (s[i].getCourses()[j] == c[k].getCode()) {
+                                cout << endl << "Course Title: " << c[k].getTitle();
+                                cout << endl << "Course Code: " << c[k].getCode();
+                                break;
+                            }
                     }
+                }
             }
-        }
-    }
+            break;
 
-    cout << endl << "Enter course code to display all students enrolled in that course: ";
-    cin >> code;
+        case 4:
+            cout << endl << "Enter course code to display all students enrolled in that course: ";
+            cin >> code;
 
-    for (int i = 0; i < 450; i++) {
-        for (int j = 0; j < 5; j++) {
-            if (s[i].getCourses()[j] == code) {
-                s[i].display();
+            for (int i = 0; i < 450; i++) {
+                for (int j = 0; j < 5; j++) {
+                    if (s[i].getCourses()[j] == code) {
+                        s[i].display();
+                    }
+                }
             }
+            break;
+
+        case 5:
+            exit(0);
+
+        default:
+            cout << endl << "Error! please input again" << endl;
+            break;
         }
+
     }
 
     return 0;
