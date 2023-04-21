@@ -1,119 +1,72 @@
-//task implementation using concepts of aggregation, assosiation and inheritence
 #include <iostream>
+#include <cstring>
 using namespace std;
 
-class Account;
+class Employee {
+	string firstName, lastName;
+	char initial;
 
-class Bank {
-    string code, address;
+public:
+	Employee(string f, string l, char i) {
+		firstName = f;
+		lastName = l;
+		initial = i;
+	}
 
-    public:
-    void manages() {
-        cout << "Bank manages accounts" << endl;
-    }
+	~Employee() {}
 
-    void maintains() {
-        cout << "Bank maintains accounts" << endl;
-    }
+	virtual void display() = 0;
+
+	void print() const {
+		cout << endl << "First name: " << firstName;
+		cout << endl << "Last name: " << lastName;
+		cout << endl << "Initial: " << initial;
+
+	}
 };
 
-class Customer {
-    string name, address, pin, dob, card_number;
-    Bank* b;
-    Account* a;
+class SalaryEmployee : public Employee {
+	double salary;
 
-    public:
-    Customer(Bank* b, Account* a) {
-        this->b = b;
-        this->a = new Account;
-        *this->a = *a;
-    }
+public:
+	SalaryEmployee(string f , string l, char i, double s = 0) : Employee(f, l, i) {
+		salary = s;
+	}
 
-    void verifyPassword() {
-        cout << "Customer verifies password" << endl;
-    }
+	~SalaryEmployee() {}
+
+	void display() {
+		Employee::print();
+		cout << endl << "Salary: " << salary;
+	}
+
 };
 
-class ATM {
-    string location, managedby;
-    Bank* b;
-    Customer* c;
+class HourlyEmployee : public Employee {
+	int numberOfHours;
+	float rate;
 
-    public:
-    ATM() {
-        this->b = nullptr;
-        this->c = nullptr;
-    }
+public:
+	HourlyEmployee(string f, string l, char i , int n =0, float r = 0) : Employee(f, l, i) {
+		numberOfHours = n;
+		rate = r;
+	}
 
-    ATM(Bank* b, Customer* c) {
-        this->b = b;
-        this->c = c;
-    }
+	~HourlyEmployee() {}
 
-    void identifies() {
-
-    }
-    
-    void transaction() {
-
-    }
+	void display() {
+		Employee::print();
+		cout << endl << "Wage: " << (numberOfHours * rate);
+	}
 };
 
-class Account {
-    private:
-    ATM* a;
+int main() 
+{
 
-    public:
-    int number;
-    double balance;
+	SalaryEmployee s("Hussain", "Ali", 'H', 150000);
+	s.display();
+	HourlyEmployee h("Hamza", "Bhatti", 'H', 27, 1200);
+	h.display();
 
-    // public:
-    Account() {
-        this->a = new ATM;
-        *this->a = *a;
-    }
-
-    Account(ATM* a) {
-        this->a = new ATM;
-        *this->a = *a;
-    }
-    void deposit() {
-
-    }
-
-    void withdraw() {
-
-    }
-
-    void createTransaction() {
-
-    }
-};
-
-class CurrentAccout: public Account {
-    SavingsAccount s;
-    public:
-    CurrentAccout(SavingsAccount s) {
-        // this->s = new SavingsAccount;
-        this->s = s;
-    }
-
-    void withdraw() {
-
-    }
-
-    void savingChecking() {
-        cout << "Saving: " << s.balance;
-    }
-};
-
-class SavingsAccount: public Account {
-    
-};
-
-int main() {
-
-
-
-    return 0;
+	return 0;
 }
