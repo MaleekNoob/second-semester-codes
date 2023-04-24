@@ -8,6 +8,8 @@ void validation(int& n) {
     }
 }
 
+class Manager;
+
 class Product {
     string name;
     int quantity;
@@ -86,17 +88,62 @@ class Product {
         return promotion;
     }
 
-    void display() {
-        cout << endl << "Name of the product: " << name;
-        cout << endl << "Quantity of the product: " << quantity;
-    }
+    friend ostream& operator<<(ostream& out, Product& p);
 };
 
-class InventoryManagementModule {
+ostream& operator<<(ostream& out, Product& p) {
+    out << endl << "Name of the product: " << p.name;
+    out << endl << "Quantity of the product: " << p.quantity;
+    out << endl << "Price of the product: " << p.price;
+    if (p.isDiscount) {
+        out << endl << "Discount on the product: " << p.discount;
+    }
+    if (p.isTax) {
+        out << endl << "Tax on the product: " << p.tax;
+    }
+    if (p.isPromotion) {
+        out << endl << "Promotion on the product: " << p.promotion;
+    }
+    return out;
+}
+
+class Cart {
     Product* p;
     int numberOfProducts;
+    double total;
 
-    void addProduct(string n, int q) {
+    public:
+    Cart(Product* p = nullptr, int n = 0, double t = 0) {
+        this->p = p;
+        numberOfProducts = n;
+        total = t;
+    }
+
+    void setProduct(Product* p) {
+        this->p = p;
+    }
+
+    void setNumberOfProducts(int n) {
+        this->numberOfProducts = n;
+    }
+
+    void setTotal(double t) {
+        this->total = t;
+    }
+
+    Product* getProduct() {
+        return p;
+    }
+
+    int getNumberOfProducts() {
+        return numberOfProducts;
+    }
+
+    double getTotal() {
+        return total;
+    }
+
+    void addProduct(string name, int quantity, double price) {
         int size = numberOfProducts + 1;
         Product* temp = new Product[size];
         for (int i = 0; i < numberOfProducts; i++) {
@@ -105,7 +152,34 @@ class InventoryManagementModule {
         numberOfProducts = size;
         delete[] p;
         p = temp;
-        p[numberOfProducts - 1] = Product(n, q);
+        p[numberOfProducts - 1] = Product(name, quantity, price);
+    }
+
+    void display() {
+        for (int i = 0; i < numberOfProducts; i++) {
+            cout << endl << "Product " << i + 1 << ": ";
+            cout << p[i];
+        }
+        cout << endl << "Number of products in the cart: " << numberOfProducts;
+        cout << endl << "Total bill: " << total;
+    }
+};
+
+class InventoryManagementModule {
+    protected:
+    Product* p;
+    int numberOfProducts;
+
+    void addProduct(string n, int q, double pr) {
+        int size = numberOfProducts + 1;
+        Product* temp = new Product[size];
+        for (int i = 0; i < numberOfProducts; i++) {
+            temp[i] = p[i];
+        }
+        numberOfProducts = size;
+        delete[] p;
+        p = temp;
+        p[numberOfProducts - 1] = Product(n, q, pr);
     }
 
 public:
@@ -127,6 +201,7 @@ public:
         cout << endl << "**************Product Ordering Utility***************";
         string name;
         int quantity;
+        double price;
         int choice = 0;
         while(choice != 3) {
             cout << "\nDo you want to order new Product or modify order exsisting one?\n1-Order new Product\n2-Modify exsisting Product\n3-Back\nSelect option: ";
@@ -140,7 +215,9 @@ public:
                     cin >> name;
                     cout << "\nEnter the Quantity: ";
                     cin >> quantity;
-                    addProduct(name, quantity);
+                    cout << "\nEnter the Price: ";
+                    cin >> price;
+                    addProduct(name, quantity, price);
                 }
                 else {
                     cout << "\nInventory level reached it's maximum.";
@@ -261,21 +338,13 @@ public:
         }
 	}
 
-};
+    int getNumberOfProducts() {
+        return numberOfProducts;
+    }
 
-class POSModule {
-public:
-	void addToCart() {
-		//add items to the cart for customer.
-	}
-
-	void applyDiscount() {
-		//apply discounts based on promotions or other factors.
-	}
-
-	void issueRefunds() {
-		//refund on customers order and updates inventory levels.
-	}
+    Product* getProducts() {
+        return p;
+    }
 
 };
 
@@ -304,17 +373,121 @@ class Manager: public InventoryManagementModule, public ReportingModule {
 
 };
 
+class POSModule/*: public InventoryManagementModule*/ {
+    Manager* i;
+    Cart c;
+    bool isCartEmpty = true;
+
+public:
+
+    POSModule(Manager* i) {
+        this->i = i;
+    }
+
+	void addToCart() {
+		cout << endl << "*******************Adding to Cart Utility*******************";
+        string name;
+        int quantity;
+        int choice;
+        cout << "\nEnter the name of the Product you want to add to cart: ";
+        cin >> name;
+        cout << "\nEnter quantity: ";
+        cin >> quantity;
+        cout << endl << "\nNumber of products: " << i->getNumberOfProducts();
+        for (int i = 0; i < this->i->getNumberOfProducts(); i++) {
+            if (name == this->i->getProducts()[i].getName()) {
+                while (this->i->getProducts()[i].getQuantity() < quantity){
+                    cout << "ERROR! Entered quantity is greater than availble. Do you want to\n1-Order more\n2-Re-Enter quantity\n3-Back\nSelect option: ";
+                    cin >> choice;
+                    switch (choice)
+                    {
+                    case 1:
+                        this->i->productOrdering();
+                        break;
+                    
+                    case 2:
+                        cout << "\nEnter Quantity: ";
+                        cin >> quantity;
+                        break;
+
+                    case 3:
+                        break;
+
+                    default:
+                        cout << "\nInvalid input";
+                        break;
+                    }
+
+                    if (choice == 3) 
+                        break;
+                }
+                
+                if (this->i->getProducts()[i].getQuantity() >= quantity) {
+                    this->i->getProducts()[i].setQuantity(this->i->getProducts()[i].getQuantity() - quantity);
+                    c.addProduct(name, quantity, this->i->getProducts()[i].getPrice());
+                    isCartEmpty = false;
+                }
+
+                break;
+            }
+
+            if (i == this->i->getNumberOfProducts() - 1) {
+                cout << endl << "Product not found";
+            }
+        }
+
+        // if (!isCartEmpty)
+        //     c.display();
+	}
+
+	void applyDiscount() {
+        string name;
+        float discountRate;
+		cout << "***************Apply Discount***************";
+        cout << endl << "Enter the name of Product: ";
+        cin >> name;
+        for (int i = 0; i < this->i->getNumberOfProducts(); i++) {
+            if (this->i->getProducts()[i].getName() == name) {
+                cout << "Enter discount rate: ";
+                cin >> discountRate;
+                if (discountRate > 0)
+                    this->i->getProducts()[i].setDiscount(discountRate);
+                else 
+                    cout << "ERROR: Discount rate cannot be negative";
+            }
+        }
+	}
+
+	void issueRefunds() {
+        cout << "***************Issue Refunds***************";
+        string name;
+        int quantity;
+        cout << endl << "Enter the name of Product: ";
+        cin >> name;
+        cout << endl << "Enter quantity: ";
+        cin >> quantity;
+        for (int i = 0; i < this->i->getNumberOfProducts(); i++) {
+            if (this->i->getProducts()[i].getName() == name) {
+                this->i->getProducts()[i].setQuantity(this->i->getProducts()[i].getQuantity() + quantity);
+            }
+        }
+	}
+
+};
+
 class Salesman: public POSModule, public ReportingModule {
     private:
 
 
     public:
-        Salesman() {}
+        Salesman(Manager* m): POSModule(m) {}
 };
 
 int main() {
 
     int choice;
+    Manager* m = new Manager();
+    Salesman* s = new Salesman(m);
     while(choice != 3) {
         cout << "Enter choice (1-Manager, 2-Salesman, 3-Exit): ";
         cin >> choice;
@@ -323,7 +496,6 @@ int main() {
             case 1:
             {
                 int choice = 0;
-                Manager* m = new Manager();
                 while(choice != 3) {
                     cout << endl << "*********MANAGER DASHBOARD**********";
                     cout << endl << "1-Inventroy Management Module\n2-Report Module\n3-Back\nSelect option: ";
@@ -374,16 +546,67 @@ int main() {
             }
             
             case 2:
-                cout << "*********SALESMAN DASHBOARD**********";
+            {
+                s = new Salesman(m);
+                while(choice != 3) {
+                    cout << "*********SALESMAN DASHBOARD**********";
+                    cout << "\n1-POS Module\n2-Report Module\n3-Back\nSelect option: ";
+                    cin >> choice;
+                    switch (choice)
+                    {
+                    case 1:
+                        while (choice != 4) {
+                            cout << endl << "**************POS MODULE*****************";
+                            cout << endl << "1-Add to Cart\n2-Apply Discount\n3-Issue Refund\n4-Back\nSelect option: ";
+                            cin >> choice;
+                            switch (choice)
+                            {
+                            case 1:
+                                s->addToCart();
+                                break;
+
+                            case 2:
+                                s->applyDiscount();
+                                break;
+
+                            case 3:
+                                s->issueRefunds();
+                                break;
+
+                            case 4:
+                                break;
+                            
+                            default:
+                                cout << "Invalid Input";
+                                break;
+                            }
+                        }
+                        break;
+
+                    case 2:
+                        cout << "****************Report Module****************";
+
+                    case 3: 
+                        break;
+                    
+                    default:
+                        break;
+                    }
+                }
                 break;
+            }
 
             case 3:
+            {
                 cout << "********You terminated**********";
                 break;
+            }
 
             default:
+            {
                 cout << "Invalid input!";
                 break;
+            }
         }
     }
 
