@@ -165,6 +165,39 @@ class Cart {
     }
 };
 
+class Customer {
+    Cart* c;
+    double balance;
+
+    public:
+    Customer(Cart* c = nullptr, double b = 0) {
+        this->c = c;
+        balance = b;
+    }
+
+    void setCart(Cart* c) {
+        this->c = c;
+    }
+
+    void setBalance(double b) {
+        this->balance = b;
+    }
+
+    Cart* getCart() {
+        return c;
+    }
+
+    double getBalance() {
+        return balance;
+    }
+
+    void display() {
+        cout << endl << "Balance: " << balance;
+        cout << endl << "Cart: ";
+        c->display();
+    }
+};
+
 class InventoryManagementModule {
     protected:
     Product* p;
@@ -375,13 +408,14 @@ class Manager: public InventoryManagementModule, public ReportingModule {
 
 class POSModule/*: public InventoryManagementModule*/ {
     Manager* i;
-    Cart c;
+    Cart* c;
     bool isCartEmpty = true;
 
 public:
 
-    POSModule(Manager* i) {
+    POSModule(Manager* i, Cart* c) {
         this->i = i;
+        this->c = c;
     }
 
 	void addToCart() {
@@ -424,7 +458,7 @@ public:
                 
                 if (this->i->getProducts()[i].getQuantity() >= quantity) {
                     this->i->getProducts()[i].setQuantity(this->i->getProducts()[i].getQuantity() - quantity);
-                    c.addProduct(name, quantity, this->i->getProducts()[i].getPrice());
+                    c->addProduct(name, quantity, this->i->getProducts()[i].getPrice());
                     isCartEmpty = false;
                 }
 
@@ -436,8 +470,6 @@ public:
             }
         }
 
-        // if (!isCartEmpty)
-        //     c.display();
 	}
 
 	void applyDiscount() {
@@ -480,14 +512,15 @@ class Salesman: public POSModule, public ReportingModule {
 
 
     public:
-        Salesman(Manager* m): POSModule(m) {}
+        Salesman(Manager* m, Cart* c): POSModule(m, c) {}
 };
 
 int main() {
 
     int choice;
     Manager* m = new Manager();
-    Salesman* s = new Salesman(m);
+    Cart* c = new Cart();
+    Salesman* s;
     while(choice != 3) {
         cout << "Enter choice (1-Manager, 2-Salesman, 3-Exit): ";
         cin >> choice;
@@ -547,7 +580,7 @@ int main() {
             
             case 2:
             {
-                s = new Salesman(m);
+                s = new Salesman(m, c);
                 while(choice != 3) {
                     cout << "*********SALESMAN DASHBOARD**********";
                     cout << "\n1-POS Module\n2-Report Module\n3-Back\nSelect option: ";
