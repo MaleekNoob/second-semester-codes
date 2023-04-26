@@ -163,9 +163,33 @@ class Cart {
         cout << endl << "Number of products in the cart: " << numberOfProducts;
         cout << endl << "Total bill: " << total;
     }
+
 };
 
-class Customer {
+class Person {
+    protected:
+    string name, address, cnic;
+    int age;
+
+    public:
+    Person(string n = "", string a="", string c="", int aa = 0) {
+        name = n;
+        address = a;
+        cnic = c;
+        age = aa;
+    }
+
+    virtual void print() = 0;
+
+    virtual void display() {
+        cout << endl << "Name: " << name;
+        cout << endl << "Address: " << address;
+        cout << endl << "CNIC: " << cnic;
+        cout << endl << "Age: " << age;
+    }
+};
+
+class Customer: public Person {
     Cart* c;
     double balance;
 
@@ -173,6 +197,10 @@ class Customer {
     Customer(Cart* c = nullptr, double b = 0) {
         this->c = c;
         balance = b;
+    }
+
+    void addToCart(Product p, int quantity) {
+        c->addProduct(p.getName(), quantity, p.getPrice());
     }
 
     void setCart(Cart* c) {
@@ -191,7 +219,8 @@ class Customer {
         return balance;
     }
 
-    void display() {
+    void print() {
+        Person::display();
         cout << endl << "Balance: " << balance;
         cout << endl << "Cart: ";
         c->display();
@@ -408,17 +437,17 @@ class Manager: public InventoryManagementModule, public ReportingModule {
 
 class POSModule/*: public InventoryManagementModule*/ {
     Manager* i;
-    Cart* c;
+    Customer* c;
     bool isCartEmpty = true;
 
 public:
 
-    POSModule(Manager* i, Cart* c) {
+    POSModule(Manager* i, Customer* c) {
         this->i = i;
         this->c = c;
     }
 
-	void addToCart() {
+	void Sell() {
 		cout << endl << "*******************Adding to Cart Utility*******************";
         string name;
         int quantity;
@@ -458,7 +487,8 @@ public:
                 
                 if (this->i->getProducts()[i].getQuantity() >= quantity) {
                     this->i->getProducts()[i].setQuantity(this->i->getProducts()[i].getQuantity() - quantity);
-                    c->addProduct(name, quantity, this->i->getProducts()[i].getPrice());
+                    // Product temp = this->i->getProducts()[i];
+                    c->addToCart(this->i->getProducts()[i], quantity);
                     isCartEmpty = false;
                 }
 
@@ -501,6 +531,7 @@ public:
         for (int i = 0; i < this->i->getNumberOfProducts(); i++) {
             if (this->i->getProducts()[i].getName() == name) {
                 this->i->getProducts()[i].setQuantity(this->i->getProducts()[i].getQuantity() + quantity);
+                c->setBalance(c->getBalance() + (this->i->getProducts()[i].getPrice() * quantity));
             }
         }
 	}
@@ -512,7 +543,7 @@ class Salesman: public POSModule, public ReportingModule {
 
 
     public:
-        Salesman(Manager* m, Cart* c): POSModule(m, c) {}
+        Salesman(Manager* m, Customer* c): POSModule(m, c) {}
 };
 
 int main() {
@@ -520,6 +551,7 @@ int main() {
     int choice;
     Manager* m = new Manager();
     Cart* c = new Cart();
+    Customer* customer = new Customer(c);
     Salesman* s;
     while(choice != 3) {
         cout << "Enter choice (1-Manager, 2-Salesman, 3-Exit): ";
@@ -580,7 +612,7 @@ int main() {
             
             case 2:
             {
-                s = new Salesman(m, c);
+                s = new Salesman(m, customer);
                 while(choice != 3) {
                     cout << "*********SALESMAN DASHBOARD**********";
                     cout << "\n1-POS Module\n2-Report Module\n3-Back\nSelect option: ";
@@ -595,7 +627,7 @@ int main() {
                             switch (choice)
                             {
                             case 1:
-                                s->addToCart();
+                                s->Sell();
                                 break;
 
                             case 2:
