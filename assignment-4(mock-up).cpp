@@ -410,23 +410,7 @@ public:
 
 };
 
-class ReportingModule {
-public:
-	void salesReport() {
-		//generate reports based on sales
-	}
-
-	void inventoryReport() {
-		//genrate reports based on inventory levels
-	}
-
-	void profitReports() {
-		//generate reports based on profits
-	}
-
-};
-
-class Manager: public InventoryManagementModule, public ReportingModule {
+class Manager: public InventoryManagementModule/*, public ReportingModule*/ {
     private:
 
 
@@ -438,16 +422,38 @@ class Manager: public InventoryManagementModule, public ReportingModule {
 class POSModule/*: public InventoryManagementModule*/ {
     Manager* i;
     Customer* c;
-    bool isCartEmpty = true;
+
+    protected:
+    Product* items_Sold;
+    int numberOfItemSold;
+
+    void itemSold(Product p, int q) {
+        int size = numberOfItemSold + 1;
+        Product* temp = new Product[size];
+        for (int i = 0; i < numberOfItemSold; i++) {
+            temp[i] = items_Sold[i];
+        }
+        delete[] items_Sold;
+        items_Sold = temp;
+        numberOfItemSold = size;
+        items_Sold[numberOfItemSold - 1] = p;
+        items_Sold[numberOfItemSold - 1].setPrice(q * p.getPrice());
+    }
 
 public:
+
+    int getNumberOfItemSold() {
+        return numberOfItemSold;
+    }
 
     POSModule(Manager* i, Customer* c) {
         this->i = i;
         this->c = c;
+        numberOfItemSold = 0;
+        items_Sold = nullptr;
     }
 
-	void Sell() {
+	void addToCart() {
 		cout << endl << "*******************Adding to Cart Utility*******************";
         string name;
         int quantity;
@@ -487,9 +493,8 @@ public:
                 
                 if (this->i->getProducts()[i].getQuantity() >= quantity) {
                     this->i->getProducts()[i].setQuantity(this->i->getProducts()[i].getQuantity() - quantity);
-                    // Product temp = this->i->getProducts()[i];
+                    itemSold(this->i->getProducts()[i], quantity);
                     c->addToCart(this->i->getProducts()[i], quantity);
-                    isCartEmpty = false;
                 }
 
                 break;
@@ -538,12 +543,34 @@ public:
 
 };
 
-class Salesman: public POSModule, public ReportingModule {
+class ReportingModule: public POSModule {
+public:
+    ReportingModule(Manager* m, Customer* c): POSModule(m, c) {}
+
+	void salesReport() {
+        cout << endl << "*******************Sales Report Utility*******************";
+		for (int i = 0; i < numberOfItemSold; i++) {
+            cout << items_Sold[i];
+            cout << endl << endl;
+        }
+	}
+
+	void inventoryReport() {
+		//genrate reports based on inventory levels
+	}
+
+	void profitReports() {
+		//generate reports based on profits
+	}
+
+};
+
+class Salesman: public ReportingModule {
     private:
 
 
     public:
-        Salesman(Manager* m, Customer* c): POSModule(m, c) {}
+        Salesman(Manager* m, Customer* c): ReportingModule(m, c) {}
 };
 
 int main() {
@@ -627,7 +654,7 @@ int main() {
                             switch (choice)
                             {
                             case 1:
-                                s->Sell();
+                                s->addToCart();
                                 break;
 
                             case 2:
@@ -650,9 +677,31 @@ int main() {
 
                     case 2:
                         cout << "****************Report Module****************";
+                        while(choice != 4) {
+                            cout << "\n1-Sales Report\n2-Inventory Report\n3-Profit Report\n4-Back\nSelect option:";
+                            cin >> choice;
+                            switch (choice)
+                            {
+                            case 1:
+                                s->salesReport();
+                                break;
 
-                    case 3: 
-                        break;
+                            case 2:
+                                s->inventoryReport();
+                                break;
+
+                            case 3:
+                                s->profitReports();
+                                break;
+
+                            case 4:
+                                break;
+
+                            default:
+                                cout << "Invalid Input";
+                                break;
+                            }
+                        }
                     
                     default:
                         break;
