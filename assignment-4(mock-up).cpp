@@ -8,7 +8,15 @@ void validation(int& n) {
     }
 }
 
+class Product;
+class Customer;
+class Cart;
+class InventoryManagementModule;
+class POSModule;
+class ReportingModule;
+class Person;
 class Manager;
+class Salesman;
 
 class Product {
     string name;
@@ -422,8 +430,6 @@ class Manager: public InventoryManagementModule/*, public ReportingModule*/ {
 class POSModule/*: public InventoryManagementModule*/ {
     Manager* i;
     Customer* c;
-
-    protected:
     Product* items_Sold;
     int numberOfItemSold;
 
@@ -442,15 +448,19 @@ class POSModule/*: public InventoryManagementModule*/ {
 
 public:
 
-    int getNumberOfItemSold() {
-        return numberOfItemSold;
-    }
-
     POSModule(Manager* i, Customer* c) {
         this->i = i;
         this->c = c;
         numberOfItemSold = 0;
         items_Sold = nullptr;
+    }
+
+    Product* getItemsSold() {
+        return items_Sold;
+    }
+
+    int getNumberOfItemSold() {
+        return numberOfItemSold;
     }
 
 	void addToCart() {
@@ -543,34 +553,47 @@ public:
 
 };
 
-class ReportingModule: public POSModule {
+class ReportingModule/*: public POSModule */{
+private:
+    Manager* m;
+    Salesman* s;
+
 public:
-    ReportingModule(Manager* m, Customer* c): POSModule(m, c) {}
+    ReportingModule(Manager* m, Salesman* s): m(m), s(s) {}
 
 	void salesReport() {
-        cout << endl << "*******************Sales Report Utility*******************";
-		for (int i = 0; i < numberOfItemSold; i++) {
-            cout << items_Sold[i];
+        cout << endl << "*******************Sales Report Utility*******************" << endl;
+		for (int i = 0; i < s->getNumberOfItemSold(); i++) {
+            cout << s->getItemsSold()[i];
             cout << endl << endl;
         }
 	}
 
 	void inventoryReport() {
-		//genrate reports based on inventory levels
+		cout << endl << "*******************Inventory Report Utility*******************" << endl;
+        for (int i = 0; i < m->getNumberOfProducts(); i++) {
+            cout << m->getProducts()[i];
+            cout << endl << endl;
+        }        
 	}
 
 	void profitReports() {
-		//generate reports based on profits
+		cout << endl << "*******************Profit Report Utility*******************" << endl;
+        float profit = 0;
+        for (int i = 0; i < s->getNumberOfItemSold(); i++) {
+            profit += s->getItemsSold()[i].getPrice();
+        }
+        cout << "Total Profit: " << profit;
 	}
 
 };
 
-class Salesman: public ReportingModule {
+class Salesman: public POSModule, public ReportingModule {
     private:
 
 
     public:
-        Salesman(Manager* m, Customer* c): ReportingModule(m, c) {}
+        Salesman(Manager* m, Customer* c, Salesman* s): POSModule(m, c), ReportingModule(m, s) {}
 };
 
 int main() {
@@ -579,6 +602,7 @@ int main() {
     Manager* m = new Manager();
     Cart* c = new Cart();
     Customer* customer = new Customer(c);
+    POSModule p = POSModule(m, customer);
     Salesman* s;
     while(choice != 3) {
         cout << "Enter choice (1-Manager, 2-Salesman, 3-Exit): ";
@@ -639,7 +663,7 @@ int main() {
             
             case 2:
             {
-                s = new Salesman(m, customer);
+                s = new Salesman(m, customer, s);
                 while(choice != 3) {
                     cout << "*********SALESMAN DASHBOARD**********";
                     cout << "\n1-POS Module\n2-Report Module\n3-Back\nSelect option: ";
