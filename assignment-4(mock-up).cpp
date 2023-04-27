@@ -1,3 +1,9 @@
+/*
+*Name: Maleek Hussain Ali
+*Roll Number: 22i-1526
+*Section: B
+*/
+
 #include <iostream>
 using namespace std;
 
@@ -348,36 +354,34 @@ public:
 	void productsTake() {
         cout << endl << "**********************Product Taking Utility**********************";
         string name;
+        int choice = 0;
         int quantity;
-        int choice;
-        while(choice != 3) {
-            cout << "\nEnter the name of the Product you want to take: ";
-            cin >> name;
-            cout << "\nEnter quantity: ";
-            cin >> quantity;
-            for (int i = 0; i < numberOfProducts; i++) {
-                if (name == p[i].getName()) {
-                    while (p[i].getQuantity() < quantity){
-                        cout << "ERROR! Entered quantity is greater than availble. Do you want to\n1-Order more\n2-Re-Enter quantity\n3-Back\nSelect option: ";
-                        cin >> choice;
-                        switch (choice)
-                        {
-                        case 1:
-                            productOrdering();
-                            break;
-                        
-                        case 2:
-                            cout << "Enter Quantity: ";
-                            cin >> quantity;
-                            break;
+        cout << "\nEnter the name of the Product you want to take : ";
+        cin >> name;
+        cout << "\nEnter quantity: ";
+        cin >> quantity;
+        for (int i = 0; i < numberOfProducts; i++) {
+            if (name == p[i].getName()) {
+                while (p[i].getQuantity() < quantity){
+                    cout << "ERROR! Entered quantity is greater than availble. Do you want to\n1-Order more\n2-Re-Enter quantity\n3-Back\nSelect option: ";
+                    cin >> choice;
+                    switch (choice)
+                    {
+                    case 1:
+                        productOrdering();
+                        break;
+                    
+                    case 2:
+                        cout << "Enter Quantity: ";
+                        cin >> quantity;
+                        break;
 
-                        default:
-                            break;
-                        }
+                    default:
+                        break;
                     }
-
-                    p[i].setQuantity(p[i].getQuantity() - quantity);
                 }
+
+                p[i].setQuantity(p[i].getQuantity() - quantity);
             }
         }
 	}
@@ -410,7 +414,7 @@ public:
 
 };
 
-class Manager: public InventoryManagementModule/*, public ReportingModule*/ {
+class Manager: public InventoryManagementModule {
     private:
 
 
@@ -419,7 +423,7 @@ class Manager: public InventoryManagementModule/*, public ReportingModule*/ {
 
 };
 
-class POSModule/*: public InventoryManagementModule*/ {
+class POSModule {
     Manager* i;
     Customer* c;
 
@@ -462,7 +466,6 @@ public:
         cin >> name;
         cout << "\nEnter quantity: ";
         cin >> quantity;
-        cout << endl << "\nNumber of products: " << i->getNumberOfProducts();
         for (int i = 0; i < this->i->getNumberOfProducts(); i++) {
             if (name == this->i->getProducts()[i].getName()) {
                 while (this->i->getProducts()[i].getQuantity() < quantity){
@@ -509,20 +512,72 @@ public:
 
 	void applyDiscount() {
         string name;
+        int choice = 0;
         float discountRate;
 		cout << "***************Apply Discount***************";
-        cout << endl << "Enter the name of Product: ";
-        cin >> name;
-        for (int i = 0; i < this->i->getNumberOfProducts(); i++) {
-            if (this->i->getProducts()[i].getName() == name) {
-                cout << "Enter discount rate: ";
-                cin >> discountRate;
-                if (discountRate > 0)
-                    this->i->getProducts()[i].setDiscount(discountRate);
-                else 
-                    cout << "ERROR: Discount rate cannot be negative";
+        while (choice != 4) {
+            cout << endl << "1-Set Discount\n2-Set Promotion\n3-Set Tax\n4-Back\nSelect option: ";
+            cin >> choice;
+            switch (choice)
+            {
+                case 1:
+                    // apply discount
+                    cout << endl << "Enter the name of Product: ";
+                    cin >> name;
+                    for (int i = 0; i < this->i->getNumberOfProducts(); i++) {
+                        if (this->i->getProducts()[i].getName() == name) {
+                            cout << "Enter discount rate: ";
+                            cin >> discountRate;
+                            if (discountRate > 0)
+                                this->i->getProducts()[i].setDiscount(discountRate);
+                            else 
+                                cout << "ERROR: Discount rate cannot be negative";
+                        }
+                    }
+                break;
+
+                case 2:
+                    // apply promotion
+                    cout << endl << "Enter the name of Product: ";
+                    cin >> name;
+                    for (int i = 0; i < this->i->getNumberOfProducts(); i++) {
+                        if (this->i->getProducts()[i].getName() == name) {
+                            cout << "Enter promotion rate: ";
+                            cin >> discountRate;
+                            if (discountRate > 0)
+                                this->i->getProducts()[i].setPromotion(discountRate);
+                            else 
+                                cout << "ERROR: Promotion rate cannot be negative";
+                        }
+                    }
+                break;
+
+                case 3:
+                    //apply Tax
+                    cout << endl << "Enter the name of Product: ";
+                    cin >> name;
+                    for (int i = 0; i < this->i->getNumberOfProducts(); i++) {
+                        if (this->i->getProducts()[i].getName() == name) {
+                            cout << "Enter tax rate: ";
+                            cin >> discountRate;
+                            if (discountRate > 0)
+                                this->i->getProducts()[i].setTax(discountRate);
+                            else 
+                                cout << "ERROR: Tax rate cannot be negative";
+                        }
+                    }
+                break;
+
+                case 4:
+                    break;
+                
+                default:
+                    cout << "Invalid input";
+                    break;
             }
         }
+
+
 	}
 
 	void issueRefunds() {
@@ -636,6 +691,35 @@ int main() {
                         }
                         break;
 
+                    case 2:
+                        while(choice != 4) {
+                            cout << endl << "**************REPORT MODULE*****************";
+                            cout << endl << "1-Sales Report\n2-Inventory Report\n3-Profit Report\n4-Back\nSelect option: ";
+                            cin >> choice;
+                            switch (choice)
+                            {
+                            case 1:
+                                s->salesReport();
+                                break;
+
+                            case 2:
+                                s->inventoryReport();
+                                break;
+
+                            case 3:
+                                s->profitReports();
+                                break;
+
+                            case 4:
+                                break;
+                            
+                            default:
+                                cout << "Invalid Input";
+                                break;
+                            }
+                        }
+                        break;
+
                     case 3:
                         break;
                     
@@ -653,9 +737,9 @@ int main() {
             case 2:
             {
                 s = new Salesman(m, customer);
-                while(choice != 3) {
+                while(choice != 5) {
                     cout << "*********SALESMAN DASHBOARD**********";
-                    cout << "\n1-POS Module\n2-Report Module\n3-Back\nSelect option: ";
+                    cout << "\n1-POS Module\n2-Report Module\n5-Back\nSelect option: ";
                     cin >> choice;
                     switch (choice)
                     {
