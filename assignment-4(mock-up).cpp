@@ -233,9 +233,59 @@ class Customer: public Person {
     }
 };
 
+/*Class of supplier*/
+class Supplier: public Person {
+    Product* p;
+    int numberOfProducts;
+
+    public:
+    Supplier(Product* p = nullptr, int n = 0) {
+        this->p = p;
+        numberOfProducts = n;
+    }
+
+    void setProduct(Product* p) {
+        this->p = p;
+    }
+
+    void setNumberOfProducts(int n) {
+        this->numberOfProducts = n;
+    }
+
+    Product* getProduct() {
+        return p;
+    }
+
+    int getNumberOfProducts() {
+        return numberOfProducts;
+    }
+
+    void addProduct(string name, int quantity, double price) {
+        int size = numberOfProducts + 1;
+        Product* temp = new Product[size];
+        for (int i = 0; i < numberOfProducts; i++) {
+            temp[i] = p[i];
+        }
+        numberOfProducts = size;
+        delete[] p;
+        p = temp;
+        p[numberOfProducts - 1] = Product(name, quantity, price);
+    }
+
+    void print() {
+        Person::display();
+        cout << endl << "Products: ";
+        for (int i = 0; i < numberOfProducts; i++) {
+            cout << endl << "Product " << i + 1 << ": ";
+            cout << p[i];
+        }
+    }
+};
+
 class InventoryManagementModule {
     protected:
     Product* p;
+    Supplier* supplier;
     int numberOfProducts;
 
     void addProduct(string n, int q, double pr) {
