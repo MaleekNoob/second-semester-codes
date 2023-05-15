@@ -43,18 +43,17 @@ public:
 int main() {
     // Create Animal, Dog, and Cat objects
     Animal* animal = new Animal("Generic Animal");
-    Animal* dog = new Dog("Fido");
-    Animal* cat = new Cat("Whiskers");
 
     // Call speak() function on each object
     animal->speak();  // Output: I am an animal.
-    dog->speak();     // Output: Fido says Woof!
-    cat->speak();     // Output: Whiskers says Meow!
+
+    animal = new Cat("Whiskers");
+    animal->speak();     // Output: Fido says Woof!
+    animal = new Dog("Fido");
+    animal->speak();     // Output: Whiskers says Meow!
 
     // Clean up
     delete animal;
-    delete dog;
-    delete cat;
 
     return 0;
 }

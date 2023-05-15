@@ -1,0 +1,56 @@
+Name: Maleek Hussain Ali
+Roll number: 22i-1526
+Section: SE-B
+Question 4:
+
+% A Prolog program that helps you keep track of your daily tasks and their completion status
+
+% A fact that represents a task with a name and a completion status
+task(work, false).
+task(study, false).
+task(exercise, false).
+
+% A rule that represents the completion status of a task using a predicate quantifier
+task_completed(X) :- task(X, true).
+
+% A rule that updates the completion status of a task using Prolog rules
+complete_task(X) :-
+    retract(task(X, false)), % remove the old fact
+    assert(task(X, true)). % add the new fact
+
+% A rule that handles input and output in a user-friendly way
+run :-
+    write('Welcome to your daily task tracker!'), nl,
+    write('Please enter one of the following commands:'), nl,
+    write('add_task(Name) - to add a new task with the given name'), nl,
+    write('complete_task(Name) - to mark a task as completed'), nl,
+    write('task_completed(Name) - to check if a task is completed'), nl,
+    write('quit - to exit the program'), nl,
+    loop. % start the main loop
+
+% A rule that implements the main loop of the program
+loop :-
+    read(Command), % read the user input
+    (Command == quit -> % if the command is quit
+        write('Goodbye!'), nl % say goodbye and exit
+    ; Command = add_task(Name) -> % if the command is add_task
+        assert(task(Name, false)), % add the new task to the knowledge base
+        write('Task added: '), write(Name), nl, % confirm the addition
+        loop % continue the loop
+    ; Command = complete_task(Name) -> % if the command is complete_task
+        (task(Name, _) -> % if the task exists
+            complete_task(Name), % update its completion status
+            write('Task completed: '), write(Name), nl % confirm the completion
+        ; write('No such task: '), write(Name), nl % otherwise report an error
+        ),
+        loop % continue the loop
+    ; Command = task_completed(Name) -> % if the command is task_completed
+        (task_completed(Name) -> % if the task is completed
+            write('Yes, '), write(Name), write(' is completed.'), nl % report a positive answer
+        ; write('No, '), write(Name), write(' is not completed.'), nl % report a negative answer
+        ),
+        loop % continue the loop
+    ; write('Invalid command.'), nl, % otherwise report an invalid command
+      loop % continue the loop
+    ).
+```
