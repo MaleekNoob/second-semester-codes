@@ -8,6 +8,8 @@ int main() {
     a.push_back(10);
     a.push_back(20);
     a.push_back(30);
+
+    int arr[] = {10, 20, 30};
     
     vector<int>::iterator it;
     // using pre-increment operator
