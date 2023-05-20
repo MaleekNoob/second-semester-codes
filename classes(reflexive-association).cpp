@@ -70,7 +70,7 @@ int main() {
     a.add(23);
     a.add(-61);
     roboust b(a);
-    cout << b;
+    b.display();
 
     return 0;
 }

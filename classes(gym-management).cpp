@@ -129,7 +129,7 @@ class User {
         cout << "Status: " << status << endl;
     }
 
-    friend ostream& operator<<(ostream& out, User& u) {
+    friend ostream& operator<<(ostream& out, const User u) {
         out << "ID: " << u.id << endl;
         out << "Name: " << u.name << endl;
         out << "Password: " << u.password << endl;
@@ -141,7 +141,7 @@ class User {
 
     void view() {
         for (int i = 0; i < numberOfUsers; i++) {
-            cout << u[i];
+            u[i].display();
         }
     }
 
@@ -236,9 +236,6 @@ class Admin {
         }
 
         friend ostream& operator<<(ostream& out, Admin& a) {
-            out << "Username: " << a.username << endl;
-            out << "Password: " << a.password << endl;
-            out << "Number of users: " << a.numberOfAdmins << endl;
             for (int i = 0; i < a.numberOfAdmins; i++) {
                 cout << endl << "Admin " << i + 1 << endl;
                 a.a[i].display();
