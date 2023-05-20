@@ -2,6 +2,16 @@
 using namespace std;
 
 static int userCount = 0;
+static int trainerCount = 0;
+
+void validateCnic(string &cnic) {
+    while (cnic.length() != 13) {
+        cout << "Invalid CNIC! Enter again: ";
+        cin >> cnic;
+    }
+}
+
+class Equipment {};
 
 class User {
     private:
@@ -247,13 +257,96 @@ class Admin {
 
 class Trainer {
     private:
-    string id, name, cnic;
-    int age;
+    string id, name, password, cnic;
+    int age, numberOfTrainers ;
+    Trainer* t;
+
+    public:
+    Trainer(string id = "N/A", string name = "N/A", string password = "N/A", string cnic = "N/A", int age = 0) {
+        this->id = id;
+        this->name = name;
+        this->password = password;
+        this->cnic = cnic;
+        this->age = age;
+        numberOfTrainers = 0;
+        t = new Trainer[numberOfTrainers];
+    }
+
+    // getters and setters
+
+    void Register() {
+
+        cout << endl << "Enter your cnic: ";
+        cin >> cnic;
+        validateCnic(cnic);
+        cout << endl << "Enter your name: ";
+        cin >> name;
+        cout << endl << "Set your password: ";
+        cin >> password;
+        cout << endl << "Enter your age: ";
+        cin >> age;
+
+        numberOfTrainers++;
+        trainerCount++;
+        Trainer* temp = new Trainer[numberOfTrainers];
+        for (int i = 0; i < numberOfTrainers - 1; i++) {
+            temp[i] = this->t[i];
+        }
+        temp[numberOfTrainers - 1] = Trainer(to_string(trainerCount), name, password, cnic, age);
+        delete [] this->t;
+        this->t = temp;
+        cout << "Trainer added successfully!" << endl;
+    }
+
+    bool Login() {
+        cout << "Enter your cnic: ";
+        cin >> cnic;
+        cout << "Enter your password: ";
+        cin >> password;
+
+        for (int i = 0; i < numberOfTrainers; i++) {
+            if (t[i].cnic == cnic && t[i].password == password) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    void getEquipment();
+
+    string getId() {
+        return id;
+    }
+
+    void setId(string id) {
+        this->id = id;
+    }
+
+    string getName() {
+        return name;
+    }
+
+    void setName(string name) {
+        this->name = name;
+    }
+
+    string getCnic() {
+        return cnic;
+    }
+
+    void setCnic(string cnic) {
+        this->cnic = cnic;
+    }
+
+    int getAge() {
+        return age;
+    }
+
+    void setAge(int age) {
+        this->age = age;
+    }
 };
-
-class Equipment {};
-
-class ContactUs {};
 
 int main() {
 
