@@ -13,7 +13,7 @@ class Pair {
         b = 0;
     }
     
-    Pair<T, T2>(T a, T2 b);
+    Pair(T a, T2 b);
 
     void setA(T a) {
         this->a = a;
@@ -49,8 +49,9 @@ Pair<T, T2>::Pair(T a, T2 b) {
 
 int main() {
 
-    int a = 10, b = 20;
-    Pair<int, float> p;
+    int a = 10;
+    double  b = 20;
+    Pair/*<int, float>*/ p(a, b);
     p.display();
     b = 30;
     p.setB(b);

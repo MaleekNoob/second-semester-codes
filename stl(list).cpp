@@ -2,6 +2,8 @@
 #include <iostream>
 #include <list>
 
+
+
 int main() {
     std::list<int> myList;
 
@@ -20,9 +22,9 @@ int main() {
     myList.insert(it, 25);
 
     // Removing elements from the list
-    myList.pop_back(); // Remove the last element
-    myList.pop_front(); // Remove the first element
-    myList.erase(it); // Remove the element at the second position
+    //myList.pop_back(); // Remove the last element
+    //myList.pop_front(); // Remove the first element
+    //myList.erase(it); // Remove the element at the second position
 
     // Iterating over the list using a range-based for loop
     for (int num : myList) {
@@ -31,13 +33,14 @@ int main() {
     std::cout << std::endl;
 
     // Reversing the list
+    // myList.;
     myList.reverse();
-
     // Iterating over the reversed list using an iterator
     for (std::list<int>::iterator it = myList.begin(); it != myList.end(); ++it) {
         std::cout << *it << " ";
     }
     std::cout << std::endl;
+
 
     // Clearing the list
     myList.clear();
