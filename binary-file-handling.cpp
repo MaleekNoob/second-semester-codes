@@ -56,7 +56,7 @@ void displayStudentRecords(const string& filename) {
     cout << "Student Records:" << endl;
 
     // Read and display all student records from the file
-    while (infile.read(reinter tudent), sizeof(Student))) {
+    while (infile.read(reinterpret_cast<char*>(&student), sizeof(Student))) {
         cout << "Roll Number: " << student.rollNumber << endl;
         cout << "Name: " << student.name << endl;
         cout << "Marks: " << student.marks << endl;
